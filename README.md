@@ -1,189 +1,124 @@
-EEG Music Analysis Project
-Overview
+# EEG Signal Processing and Music Analysis
 
-This project implements a complete EEG signal processing pipeline to analyze how different music styles affect brain activity.
-The EEG data is processed using MATLAB, following standard biomedical signal-processing methods, including filtering, frequency-band analysis, Fourier analysis, and wavelet decomposition.
+## Overview
+This repository contains a MATLAB-based project that implements a complete **EEG signal processing pipeline** to analyze how **different music styles influence brain activity**. The project demonstrates standard techniques used in biomedical signal processing, including filtering, frequency-band analysis, spectral analysis, and wavelet decomposition.
 
-The project demonstrates how raw EEG recordings can be transformed into interpretable brain rhythm features and compared across music conditions and EEG channels.
+The main objective is to transform **raw EEG recordings** into **interpretable frequency-based features** and compare brain responses across different music conditions.
 
-Dataset
+---
 
-Format: EDF (European Data Format)
+## Dataset
+- **Format:** EDF (European Data Format)
+- **File name:** Proband1.EDF
+- **Type:** Multichannel EEG recording
+- **Sampling frequency:** ~200 Hz (determined from EDF header)
+- **Channels analyzed:** O1 and O2 (occipital cortex)
 
-File: Proband1.EDF
+⚠️ **Important:**  
+The original EEG data file (`.EDF`) is **not included** in this repository due to file size and data-handling restrictions. The dataset was provided externally for academic use and must be placed locally to run the analysis.
 
-Type: Multichannel EEG recording
+---
 
-Sampling frequency: ~200 Hz (determined from EDF header)
-
-Channels used for analysis: O1 and O2 (occipital cortex)
-
-Objectives
-
+## Project Objectives
 The goals of this project are to:
+1. Load and inspect real EEG data
+2. Determine the correct sampling frequency
+3. Remove low-frequency baseline drift
+4. Segment EEG data based on music styles
+5. Analyze standard EEG frequency bands
+6. Compare brain activity across music conditions and channels
+7. Quantify results using band power and indices
+8. Visualize EEG bands using wavelet decomposition
 
-Load and inspect real EEG data
+---
 
-Determine the correct sampling frequency
+## Processing Pipeline (Tasks 1–8)
 
-Remove low-frequency baseline drift
+### Task 1 – Read EEG Data
+EEG data is loaded using MATLAB’s `edfread` function. Channel names and metadata are inspected to verify correct data import.
 
-Segment EEG data based on music styles
+---
 
-Analyze EEG frequency bands (Delta–Gamma)
+### Task 2 – Sampling Frequency Determination
+The sampling frequency is extracted from the EDF header information, as timetable row times represent record timing rather than individual EEG samples.
 
-Compare brain activity across music conditions
+---
 
-Quantify results using band power and indices
+### Task 3 – High-Pass Filter Design
+A **4th-order IIR Butterworth high-pass filter** with a cutoff frequency of **0.5 Hz** is designed to remove slow baseline drift and low-frequency artifacts. An IIR filter is chosen for its efficiency at low cutoff frequencies.
 
-Visualize EEG bands using wavelet decomposition
+---
 
-Processing Pipeline (Tasks 1–8)
-Task 1 – Read EEG Data
-
-The EEG data is loaded using MATLAB’s edfread function.
-Channel names and metadata are inspected to understand the structure of the recording.
-
-Task 2 – Determine Sampling Rate
-
-The sampling frequency is extracted from the EDF header information.
-This step is essential for correct frequency analysis, filtering, and spectral computations.
-
-Task 3 – High-Pass Filter Design
-
-A 0.5 Hz high-pass IIR Butterworth filter is designed to remove:
-
-Baseline drift
-
-Very slow non-physiological components
-
-Why IIR?
-
-Efficient for low cutoff frequencies
-
-Requires lower filter order than FIR
-
-Standard practice in EEG preprocessing
-
-Task 4 – Music Segmentation
-
+### Task 4 – Music Segmentation
 The continuous EEG recording is segmented into time intervals corresponding to different music styles:
+- Pre-recording
+- Metal
+- Classical music
+- Relaxing music
+- Favourite song
+- Post-recording
 
-Pre-recording
+---
 
-Metal
-
-Classical music
-
-Relaxing music
-
-Favourite song
-
-Post-recording
-
-Each segment is analyzed independently.
-
-Task 5 – EEG Frequency Bands
-
+### Task 5 – EEG Frequency Bands
 Standard EEG frequency bands are defined:
+- Delta: 0.5–4 Hz
+- Theta: 4–8 Hz
+- Alpha: 8–13 Hz
+- Beta: 13–30 Hz
+- Gamma: 30–45 Hz
 
-Band	Frequency Range (Hz)
-Delta	0.5 – 4
-Theta	4 – 8
-Alpha	8 – 13
-Beta	13 – 30
-Gamma	30 – 45
+---
 
-These bands correspond to different physiological and cognitive states.
+### Task 6 – Analysis by Song and Channel
+For each music segment and EEG channel (O1 and O2):
+- The signal is filtered
+- Band power is computed
+- Relative band power is calculated
+- The **Power Ratio Index (PRI)** is derived:
 
-Task 6 – Analysis by Song and Channel
+PRI = (Delta + Theta) / (Alpha + Beta + Gamma)
 
-For each music segment and EEG channel (O1, O2):
+---
 
-The signal is filtered
+### Task 7 – Results Export
+All computed features are stored in a MATLAB table and exported as an Excel (`.xlsx`) file using `table`, `writetable`, and `winopen`.
 
-Band power is computed
+---
 
-Relative band power is calculated
+### Task 8 – Wavelet Decomposition
+Discrete Wavelet Transform (DWT) is used to decompose EEG signals into individual frequency bands. Wavelet analysis preserves both time and frequency information and is well suited for non-stationary EEG signals.
 
-The Power Ratio Index (PRI) is derived
+---
 
-Power Ratio Index (PRI):
+## Interpretation of Results
+- Low-frequency EEG bands dominate signal amplitude, which is normal physiological behavior.
+- Alpha activity is prominent in occipital channels during relaxed music listening.
+- Beta and Gamma bands have lower amplitude but reflect cognitive engagement.
+- Music styles influence EEG rhythms in a measurable and comparable manner.
 
-PRI
-=
-Delta + Theta
-Alpha + Beta + Gamma
-PRI=
-Alpha + Beta + Gamma
-Delta + Theta
-	​
+---
 
+## Tools and Requirements
+- MATLAB
+- Signal Processing Toolbox
+- Wavelet Toolbox
 
-PRI provides a compact measure of slow vs. fast brain activity dominance.
+---
 
-Task 7 – Results Table and Export
+## Disclaimer
+This project is intended **for educational purposes only** and does not provide medical or clinical diagnosis.
 
-All computed features are stored in a MATLAB table and exported as an Excel file (.xlsx) using:
+---
 
-table
-
-writetable
-
-winopen
-
-This enables further analysis and reporting outside MATLAB.
-
-Task 8 – Wavelet Decomposition
-
-Discrete Wavelet Transform (DWT) is used to decompose EEG signals into individual frequency bands.
-
-Why wavelets?
-
-EEG is non-stationary
-
-Wavelets preserve both time and frequency information
-
-Suitable for analyzing dynamic brain responses to music
-
-Each music condition and channel is visualized with separate Delta–Gamma band signals.
-
-Interpretation of Results
-
-Low-frequency bands (Delta, Theta) dominate amplitude, which is normal in EEG.
-
-High-frequency bands (Beta, Gamma) have lower amplitude but reflect cognitive engagement.
-
-Differences between music styles are interpreted relatively, not by absolute amplitude.
-
-O1 and O2 channels are used because they provide stable measurements related to visual and relaxation processes.
-
-Key Takeaways
-
-EEG analysis focuses on patterns and comparisons, not raw voltages.
-
-Music influences brain rhythms in measurable ways.
-
-Frequency-based features and ratios provide meaningful insights into brain state changes.
-
-This pipeline reflects standard EEG preprocessing and analysis used in research.
-
-Tools and Methods
-
-MATLAB
-
-Signal Processing Toolbox
-
-Wavelet Toolbox
-
-EDF medical data format
-
-Disclaimer
-
-This project is for educational purposes only.
-It does not perform medical diagnosis or clinical interpretation.
-
-Author
-
-Samson Agbadi 
+## Author
+**Samson Agbadi**  
 EEG Signal Processing & Biomedical Engineering Project
+
+---
+
+## How to Run
+1. Place the EEG data file (`Proband1.EDF`) in the project directory (local only).
+2. Open MATLAB.
+3. Run the main script or live script (`Lab_EEG_basics.mlx`).
+4. Generated figures and result tables will be saved automatically.
